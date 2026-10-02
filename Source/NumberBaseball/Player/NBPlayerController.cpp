@@ -23,4 +23,11 @@ void ANBPlayerController::BeginPlay()
 void ANBPlayerController::SetChatMessageString(const FString& InChatMessageString)
 {
 	ChatMessageString = InChatMessageString;
+
+	PrintChatMessageString(ChatMessageString);
+}
+
+void ANBPlayerController::PrintChatMessageString(const FString& InChatMessageString)
+{
+	UKismetSystemLibrary::PrintString(this, ChatMessageString, true, true, FLinearColor::Red, 5.0f);
 }
