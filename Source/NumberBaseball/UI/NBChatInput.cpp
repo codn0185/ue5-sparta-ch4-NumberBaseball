@@ -32,5 +32,12 @@ void UNBChatInput::OnChatInputTextCommitted(const FText& Text, ETextCommit::Type
 		OnTextCommitted.ExecuteIfBound(Text, CommitMethod);
 
 		EditableTextBox_ChatInput->SetText(FText::GetEmpty());
+
+		GetWorld()->GetTimerManager().SetTimerForNextTick(
+			FTimerDelegate::CreateLambda(
+				[this]()
+				{
+					EditableTextBox_ChatInput->SetKeyboardFocus();
+				}));
 	}
 }
