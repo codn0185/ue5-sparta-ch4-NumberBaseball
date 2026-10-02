@@ -50,4 +50,20 @@ class NBFunctionLibrary
 
 		return NetModeString;
 	}
+
+	// NetRole 문자열 전환 (Local Role / Remote Role)
+	static FString GetRoleString(const AActor* InActor)
+	{
+		FString RoleString = TEXT("None");
+
+		if (IsValid(InActor) == true)
+		{
+			FString LocalRoleString = UEnum::GetValueAsString(TEXT("Engine.ENetRole"), InActor->GetLocalRole());
+			FString RemoteRoleString = UEnum::GetValueAsString(TEXT("Engine.ENetRole"), InActor->GetRemoteRole());
+
+			RoleString = FString::Printf(TEXT("%s / %s"), *LocalRoleString, *RemoteRoleString);
+		}
+
+		return RoleString;
+	}
 };
