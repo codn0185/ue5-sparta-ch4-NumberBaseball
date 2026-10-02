@@ -26,6 +26,7 @@ class NUMBERBASEBALL_API ANBPlayerController : public APlayerController
   protected:
 	virtual void BeginPlay() override;
 
+  public:
 	// 채팅 메시지 캐시 설정
 	void SetChatMessageString(const FString& InChatMessageString);
 };
