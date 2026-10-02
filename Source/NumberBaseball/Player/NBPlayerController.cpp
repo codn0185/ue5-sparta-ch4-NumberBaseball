@@ -19,3 +19,8 @@ void ANBPlayerController::BeginPlay()
 		}
 	}
 }
+
+void ANBPlayerController::SetChatMessageString(const FString& InChatMessageString)
+{
+	ChatMessageString = InChatMessageString;
+}
