@@ -13,6 +13,9 @@ class NUMBERBASEBALL_API UNBChatInput : public UUserWidget
 {
 	GENERATED_BODY()
 
+  public:
+	FOnTextCommitted OnTextCommitted;
+
   protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UEditableTextBox> EditableTextBox_ChatInput;

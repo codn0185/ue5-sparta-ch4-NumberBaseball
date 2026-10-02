@@ -1,7 +1,6 @@
 ﻿#include "UI/NBChatInput.h"
 
 #include "Components/EditableTextBox.h"
-#include "Player/NBPlayerController.h"
 
 void UNBChatInput::NativeConstruct()
 {
@@ -30,16 +29,8 @@ void UNBChatInput::OnChatInputTextCommitted(const FText& Text, ETextCommit::Type
 	// Enter 키 입력
 	if (CommitMethod == ETextCommit::OnEnter)
 	{
-		APlayerController* OwningPlayerController = GetOwningPlayer();
-		if (IsValid(OwningPlayerController))
-		{
-			ANBPlayerController* OwningNBPlayerController = Cast<ANBPlayerController>(OwningPlayerController);
-			if (IsValid(OwningNBPlayerController))
-			{
-				OwningNBPlayerController->SetChatMessageString(Text.ToString());
+		OnTextCommitted.ExecuteIfBound(Text, CommitMethod);
 
-				EditableTextBox_ChatInput->SetText(FText::GetEmpty());
-			}
-		}
+		EditableTextBox_ChatInput->SetText(FText::GetEmpty());
 	}
 }
