@@ -1,5 +1,6 @@
 ﻿#include "Player/NBPlayerController.h"
 
+#include "EngineUtils.h"
 #include "NumberBaseball.h"
 
 #include "Kismet/KismetSystemLibrary.h"
@@ -35,7 +36,11 @@ void ANBPlayerController::SetChatMessageString(const FString& InChatMessageStrin
 {
 	ChatMessageString = InChatMessageString;
 
-	PrintChatMessageString(ChatMessageString);
+	// PrintChatMessageString(ChatMessageString);
+	if (IsLocalController())
+	{
+		ServerRPCPrintChatMessageString(InChatMessageString);
+	}
 }
 
 void ANBPlayerController::PrintChatMessageString(const FString& InChatMessageString)
@@ -46,4 +51,21 @@ void ANBPlayerController::PrintChatMessageString(const FString& InChatMessageStr
 void ANBPlayerController::OnTextCommitted(const FText& Text, ETextCommit::Type CommitMethod)
 {
 	SetChatMessageString(Text.ToString());
+}
+
+void ANBPlayerController::ClientRPCPrintChatMessageString_Implementation(const FString& InChatMessageString)
+{
+	PrintChatMessageString(InChatMessageString);
+}
+
+void ANBPlayerController::ServerRPCPrintChatMessageString_Implementation(const FString& InChatMessageString)
+{
+	for (TActorIterator<ANBPlayerController> It(GetWorld()); It; ++It)
+	{
+		ANBPlayerController* NBPlayerController = *It;
+		if (IsValid(NBPlayerController) == true)
+		{
+			NBPlayerController->ClientRPCPrintChatMessageString(InChatMessageString);
+		}
+	}
 }
