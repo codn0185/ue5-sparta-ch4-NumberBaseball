@@ -54,7 +54,7 @@ FString ANBGameModeBase::GenerateSecretNumber()
 	return SecretNumber;
 }
 
-bool ANBGameModeBase::IsGuessNumberString(const FString& InNumberString)
+bool ANBGameModeBase::IsGuessNumberString(const FString& InNumberString) const
 {
 	// 개수 확인
 	if (InNumberString.Len() != NumberLength)

@@ -42,7 +42,7 @@ class NUMBERBASEBALL_API ANBGameModeBase : public AGameModeBase
 	// 정답 숫자 생성 (중복되지 않는 숫자로 이루어짐)
 	FString GenerateSecretNumber();
 	// 유효한 추측 숫자인지 여부 (중복되지 않았는지, 개수가 다르지 않는지 등 확인)
-	bool IsGuessNumberString(const FString& InNumberString);
+	bool IsGuessNumberString(const FString& InNumberString) const;
 	// 정답 판정
 	FResult JudgeResult(const FString& InSecretNumberString, const FString& InGuessNumberString);
 };
