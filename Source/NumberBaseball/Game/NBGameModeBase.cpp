@@ -3,6 +3,7 @@
 #include "Algo/RandomShuffle.h"
 #include "Game/NBGameStateBase.h"
 #include "Player/NBPlayerController.h"
+#include "Player/NBPlayerState.h"
 
 FString FResult::ToString() const
 {
@@ -31,18 +32,28 @@ void ANBGameModeBase::OnPostLogin(AController* NewPlayer)
 {
 	Super::OnPostLogin(NewPlayer);
 
-	// 입장 메시지 출력
-	ANBGameStateBase* NBGameStateBase = GetGameState<ANBGameStateBase>();
-	if (IsValid(NBGameStateBase))
-	{
-		NBGameStateBase->MulticastRPCBroadcastLoginMessage(GetNameSafe(NewPlayer));
-	}
-
-	// 플레이어 추가
+	// ANBPlayerController 확인
 	ANBPlayerController* NBPlayerController = Cast<ANBPlayerController>(NewPlayer);
 	if (IsValid(NBPlayerController))
 	{
+		// 플레이어 추가
 		AllPlayerControllers.Add(NBPlayerController);
+
+		// PlayerState 확인
+		ANBPlayerState* NBPlayerState = NBPlayerController->GetPlayerState<ANBPlayerState>();
+		if (IsValid(NBPlayerState))
+		{
+			// 플레이어 이름 설정
+			NBPlayerState->PlayerNameString = TEXT("Player") + FString::FromInt(AllPlayerControllers.Num());
+		}
+
+		// GameState 확인
+		ANBGameStateBase* NBGameState = GetGameState<ANBGameStateBase>();
+		if (IsValid(NBGameState))
+		{
+			// 플레이어 입장 메시지 출력
+			NBGameState->MulticastRPCBroadcastLoginMessage(NBPlayerState->PlayerNameString);
+		}
 	}
 }
 
