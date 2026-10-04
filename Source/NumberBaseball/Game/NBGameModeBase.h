@@ -32,10 +32,17 @@ class NUMBERBASEBALL_API ANBGameModeBase : public AGameModeBase
 	// 숫자 길이 (1 ~ 9)
 	int32 NumberLength;
 
+	// 정답 숫자
+	FString SecretNumberString;
+	// 전체 플레이어
+	TArray<TObjectPtr<ANBPlayerController>>		;
+
   public:
 	ANBGameModeBase();
 
   protected:
+	virtual void BeginPlay() override;
+
 	virtual void OnPostLogin(AController* NewPlayer) override;
 
   public:
@@ -45,4 +52,9 @@ class NUMBERBASEBALL_API ANBGameModeBase : public AGameModeBase
 	bool IsGuessNumberString(const FString& InNumberString) const;
 	// 정답 판정
 	FResult JudgeResult(const FString& InSecretNumberString, const FString& InGuessNumberString);
+
+	// 채팅 메시지 출력 (일반 채팅 or 정답 유추 채팅인지 판별 후 출력)
+	void PrintChatMessageString(ANBPlayerController* InChattingPlayerController, const FString& InChatMessageString);
+	// 정답 유추 채팅인지 여부
+	bool IsGuessChat(const FString& InChatMessageString, FString& OutGuessNumberString) const;
 };

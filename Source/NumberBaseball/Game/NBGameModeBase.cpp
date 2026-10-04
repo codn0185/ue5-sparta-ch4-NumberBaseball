@@ -2,6 +2,7 @@
 
 #include "Algo/RandomShuffle.h"
 #include "Game/NBGameStateBase.h"
+#include "Player/NBPlayerController.h"
 
 FString FResult::ToString() const
 {
@@ -18,14 +19,30 @@ ANBGameModeBase::ANBGameModeBase()
 	NumberLength = 3;
 }
 
+void ANBGameModeBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SecretNumberString = GenerateSecretNumber();
+	UE_LOG(LogTemp, Error, TEXT("%s"), *SecretNumberString);
+}
+
 void ANBGameModeBase::OnPostLogin(AController* NewPlayer)
 {
 	Super::OnPostLogin(NewPlayer);
 
+	// 입장 메시지 출력
 	ANBGameStateBase* NBGameStateBase = GetGameState<ANBGameStateBase>();
 	if (IsValid(NBGameStateBase))
 	{
 		NBGameStateBase->MulticastRPCBroadcastLoginMessage(GetNameSafe(NewPlayer));
+	}
+
+	// 플레이어 추가
+	ANBPlayerController* NBPlayerController = Cast<ANBPlayerController>(NewPlayer);
+	if (IsValid(NBPlayerController))
+	{
+		AllPlayerControllers.Add(NBPlayerController);
 	}
 }
 
@@ -109,4 +126,53 @@ FResult ANBGameModeBase::JudgeResult(const FString& InSecretNumberString, const 
 	Result.bIsCorrect = Result.StrikeCount == NumberLength;
 
 	return Result;
+}
+
+void ANBGameModeBase::PrintChatMessageString(ANBPlayerController* InChattingPlayerController, const FString& InChatMessageString)
+{
+	const FString PlayerName = GetNameSafe(InChattingPlayerController);
+
+	// 정답 유추 채팅
+	FString GuessNumberString;
+	if (IsGuessChat(InChatMessageString, GuessNumberString))
+	{
+		FResult Result = JudgeResult(SecretNumberString, GuessNumberString);
+		FString JudgeResultString = Result.ToString();
+		for (TObjectPtr<ANBPlayerController> NBPlayerController : AllPlayerControllers)
+		{
+			if (IsValid(NBPlayerController) == true)
+			{
+				const FString CombinedMessageString = PlayerName + TEXT(" : ") + InChatMessageString + TEXT(" -> ") + JudgeResultString;
+				NBPlayerController->ClientRPCPrintChatMessageString(CombinedMessageString);
+				UE_LOG(LogTemp, Warning, TEXT("[Guess] - %s"), *CombinedMessageString);
+			}
+		}
+	}
+	// 일반 채팅
+	else
+	{
+		for (TObjectPtr<ANBPlayerController> NBPlayerController : AllPlayerControllers)
+		{
+			if (IsValid(NBPlayerController))
+			{
+				const FString CombinedMessageString = PlayerName + TEXT(" : ") + InChatMessageString;
+				NBPlayerController->ClientRPCPrintChatMessageString(CombinedMessageString);
+				UE_LOG(LogTemp, Warning, TEXT("[Chat] - %s"), *CombinedMessageString);
+			}
+		}
+	}
+}
+
+bool ANBGameModeBase::IsGuessChat(const FString& InChatMessageString, FString& OutGuessNumberString) const
+{
+	int Index = InChatMessageString.Len() - NumberLength;
+	FString GuessNumberString = InChatMessageString.RightChop(Index);
+
+	if (IsGuessNumberString(GuessNumberString))
+	{
+		OutGuessNumberString = GuessNumberString;
+		return true;
+	}
+
+	return false;
 }

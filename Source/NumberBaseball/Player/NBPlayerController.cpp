@@ -3,6 +3,8 @@
 #include "EngineUtils.h"
 #include "NumberBaseball.h"
 
+#include "Game/NBGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "UI/NBChatInput.h"
 
@@ -60,12 +62,13 @@ void ANBPlayerController::ClientRPCPrintChatMessageString_Implementation(const F
 
 void ANBPlayerController::ServerRPCPrintChatMessageString_Implementation(const FString& InChatMessageString)
 {
-	for (TActorIterator<ANBPlayerController> It(GetWorld()); It; ++It)
+	AGameModeBase* GameMode = UGameplayStatics::GetGameMode(this);
+	if (IsValid(GameMode))
 	{
-		ANBPlayerController* NBPlayerController = *It;
-		if (IsValid(NBPlayerController) == true)
+		ANBGameModeBase* NBGameMode = Cast<ANBGameModeBase>(GameMode);
+		if (IsValid(NBGameMode))
 		{
-			NBPlayerController->ClientRPCPrintChatMessageString(InChatMessageString);
+			NBGameMode->PrintChatMessageString(this, InChatMessageString);
 		}
 	}
 }
