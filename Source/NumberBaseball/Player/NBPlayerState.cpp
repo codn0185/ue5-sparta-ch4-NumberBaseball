@@ -18,3 +18,9 @@ void ANBPlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>&
 	DOREPLIFETIME(ThisClass, MaxGuessCount);
 	DOREPLIFETIME(ThisClass, CurrentGuessCount);
 }
+
+FString ANBPlayerState::GetPlayerInfoString() const
+{
+	const FString PlayerInfoString = PlayerNameString + TEXT("(") + FString::FromInt(CurrentGuessCount) + TEXT("/") + FString::FromInt(MaxGuessCount) + TEXT(")");
+	return PlayerInfoString;
+}

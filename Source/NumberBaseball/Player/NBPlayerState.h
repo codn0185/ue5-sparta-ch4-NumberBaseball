@@ -28,4 +28,7 @@ class NUMBERBASEBALL_API ANBPlayerState : public APlayerState
 	ANBPlayerState();
 
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+
+  public:
+	FString GetPlayerInfoString() const;
 };

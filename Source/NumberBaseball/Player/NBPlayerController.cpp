@@ -45,7 +45,7 @@ void ANBPlayerController::SetChatMessageString(const FString& InChatMessageStrin
 		if (IsValid(NBPlayerState))
 		{
 			// 플레이어 이름을 메시지 앞에 추가하여 출력
-			FString CombinedMessageString = NBPlayerState->PlayerNameString + TEXT(": ") + InChatMessageString;
+			FString CombinedMessageString = NBPlayerState->GetPlayerInfoString() + TEXT(": ") + InChatMessageString;
 			ServerRPCPrintChatMessageString(CombinedMessageString);
 		}
 	}
