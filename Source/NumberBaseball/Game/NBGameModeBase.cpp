@@ -141,34 +141,49 @@ FResult ANBGameModeBase::JudgeResult(const FString& InSecretNumberString, const 
 
 void ANBGameModeBase::PrintChatMessageString(ANBPlayerController* InChattingPlayerController, const FString& InChatMessageString)
 {
+	// PlayerController 유효성 검증
+	if (!IsValid(InChattingPlayerController))
+	{
+		return;
+	}
+
+	// PlayerState 유효성 검증
+	ANBPlayerState* NBPlayerState = InChattingPlayerController->GetPlayerState<ANBPlayerState>();
+	if (!IsValid(NBPlayerState))
+	{
+		return;
+	}
+
 	// 정답 유추 채팅
-	FString GuessNumberString;
-	if (IsGuessChat(InChatMessageString, GuessNumberString))
+	if (IsGuessNumberString(InChatMessageString))
 	{
 		// 유추 횟수 증가
 		IncreaseGuessCount(InChattingPlayerController);
+		const FString PrefixMessageString = NBPlayerState->GetPlayerInfoString() + TEXT(": ");
 
-		FResult Result = JudgeResult(SecretNumberString, GuessNumberString);
+		// 모든 플레이어에 유추 결과 메시지 출력
+		FResult Result = JudgeResult(SecretNumberString, InChatMessageString);
 		FString JudgeResultString = Result.ToString();
 		for (TObjectPtr<ANBPlayerController> NBPlayerController : AllPlayerControllers)
 		{
 			if (IsValid(NBPlayerController) == true)
 			{
-				const FString CombinedMessageString = InChatMessageString + TEXT(" -> ") + JudgeResultString;
+				const FString CombinedMessageString = PrefixMessageString + InChatMessageString + TEXT(" -> ") + JudgeResultString;
 				NBPlayerController->ClientRPCPrintChatMessageString(CombinedMessageString);
-				UE_LOG(LogTemp, Warning, TEXT("[Guess] - %s"), *CombinedMessageString);
 			}
 		}
 	}
 	// 일반 채팅
 	else
 	{
+		// 모든 플레이어에 일반 채팅 메시지 출력
+		const FString PrefixMessageString = NBPlayerState->GetPlayerInfoString() + TEXT(": ");
 		for (TObjectPtr<ANBPlayerController> NBPlayerController : AllPlayerControllers)
 		{
 			if (IsValid(NBPlayerController))
 			{
-				NBPlayerController->ClientRPCPrintChatMessageString(InChatMessageString);
-				UE_LOG(LogTemp, Warning, TEXT("[Chat] - %s"), *InChatMessageString);
+				const FString CombinedMessageString = PrefixMessageString + InChatMessageString;
+				NBPlayerController->ClientRPCPrintChatMessageString(CombinedMessageString);
 			}
 		}
 	}
