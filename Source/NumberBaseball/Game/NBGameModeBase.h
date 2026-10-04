@@ -35,7 +35,7 @@ class NUMBERBASEBALL_API ANBGameModeBase : public AGameModeBase
 	// 정답 숫자
 	FString SecretNumberString;
 	// 전체 플레이어
-	TArray<TObjectPtr<ANBPlayerController>>		;
+	TArray<TObjectPtr<ANBPlayerController>> AllPlayerControllers;
 
   public:
 	ANBGameModeBase();
