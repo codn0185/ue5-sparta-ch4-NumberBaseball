@@ -57,4 +57,7 @@ class NUMBERBASEBALL_API ANBGameModeBase : public AGameModeBase
 	void PrintChatMessageString(ANBPlayerController* InChattingPlayerController, const FString& InChatMessageString);
 	// 정답 유추 채팅인지 여부
 	bool IsGuessChat(const FString& InChatMessageString, FString& OutGuessNumberString) const;
+
+	// 플레이어의 유추 횟수 증가
+	void IncreaseGuessCount(ANBPlayerController* InChattingPlayerController);
 };

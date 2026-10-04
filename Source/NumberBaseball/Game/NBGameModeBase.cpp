@@ -145,6 +145,9 @@ void ANBGameModeBase::PrintChatMessageString(ANBPlayerController* InChattingPlay
 	FString GuessNumberString;
 	if (IsGuessChat(InChatMessageString, GuessNumberString))
 	{
+		// 유추 횟수 증가
+		IncreaseGuessCount(InChattingPlayerController);
+
 		FResult Result = JudgeResult(SecretNumberString, GuessNumberString);
 		FString JudgeResultString = Result.ToString();
 		for (TObjectPtr<ANBPlayerController> NBPlayerController : AllPlayerControllers)
@@ -183,4 +186,22 @@ bool ANBGameModeBase::IsGuessChat(const FString& InChatMessageString, FString& O
 	}
 
 	return false;
+}
+
+void ANBGameModeBase::IncreaseGuessCount(ANBPlayerController* InChattingPlayerController)
+{
+	// InChattingPlayerController 유효성 검증
+	if (!IsValid(InChattingPlayerController))
+	{
+		return;
+	}
+
+	// PlayerState 확인
+	ANBPlayerState* NBPlayerState = InChattingPlayerController->GetPlayerState<ANBPlayerState>();
+	if (!IsValid(NBPlayerState))
+	{
+		return;
+	}
+
+	NBPlayerState->CurrentGuessCount++;
 }
