@@ -6,6 +6,7 @@
 #include "Game/NBGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Player/NBPlayerState.h"
 #include "UI/NBChatInput.h"
 
 void ANBPlayerController::BeginPlay()
@@ -38,10 +39,15 @@ void ANBPlayerController::SetChatMessageString(const FString& InChatMessageStrin
 {
 	ChatMessageString = InChatMessageString;
 
-	// PrintChatMessageString(ChatMessageString);
 	if (IsLocalController())
 	{
-		ServerRPCPrintChatMessageString(InChatMessageString);
+		ANBPlayerState* NBPlayerState = GetPlayerState<ANBPlayerState>();
+		if (IsValid(NBPlayerState))
+		{
+			// 플레이어 이름을 메시지 앞에 추가하여 출력
+			FString CombinedMessageString = NBPlayerState->PlayerNameString + TEXT(": ") + InChatMessageString;
+			ServerRPCPrintChatMessageString(CombinedMessageString);
+		}
 	}
 }
 
