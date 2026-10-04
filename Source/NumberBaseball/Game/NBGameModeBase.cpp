@@ -83,7 +83,7 @@ bool ANBGameModeBase::IsGuessNumberString(const FString& InNumberString)
 		}
 	}
 
-	return false;
+	return true;
 }
 
 FResult ANBGameModeBase::JudgeResult(const FString& InSecretNumberString, const FString& InGuessNumberString)
