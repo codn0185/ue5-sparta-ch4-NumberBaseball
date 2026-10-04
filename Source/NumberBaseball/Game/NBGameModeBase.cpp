@@ -141,8 +141,6 @@ FResult ANBGameModeBase::JudgeResult(const FString& InSecretNumberString, const 
 
 void ANBGameModeBase::PrintChatMessageString(ANBPlayerController* InChattingPlayerController, const FString& InChatMessageString)
 {
-	const FString PlayerName = GetNameSafe(InChattingPlayerController);
-
 	// 정답 유추 채팅
 	FString GuessNumberString;
 	if (IsGuessChat(InChatMessageString, GuessNumberString))
@@ -153,7 +151,7 @@ void ANBGameModeBase::PrintChatMessageString(ANBPlayerController* InChattingPlay
 		{
 			if (IsValid(NBPlayerController) == true)
 			{
-				const FString CombinedMessageString = PlayerName + TEXT(" : ") + InChatMessageString + TEXT(" -> ") + JudgeResultString;
+				const FString CombinedMessageString = InChatMessageString + TEXT(" -> ") + JudgeResultString;
 				NBPlayerController->ClientRPCPrintChatMessageString(CombinedMessageString);
 				UE_LOG(LogTemp, Warning, TEXT("[Guess] - %s"), *CombinedMessageString);
 			}
@@ -166,9 +164,8 @@ void ANBGameModeBase::PrintChatMessageString(ANBPlayerController* InChattingPlay
 		{
 			if (IsValid(NBPlayerController))
 			{
-				const FString CombinedMessageString = PlayerName + TEXT(" : ") + InChatMessageString;
-				NBPlayerController->ClientRPCPrintChatMessageString(CombinedMessageString);
-				UE_LOG(LogTemp, Warning, TEXT("[Chat] - %s"), *CombinedMessageString);
+				NBPlayerController->ClientRPCPrintChatMessageString(InChatMessageString);
+				UE_LOG(LogTemp, Warning, TEXT("[Chat] - %s"), *InChatMessageString);
 			}
 		}
 	}
