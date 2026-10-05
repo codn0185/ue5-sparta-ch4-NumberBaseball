@@ -6,6 +6,7 @@
 
 #include "NBPlayerController.generated.h"
 
+class UUserWidget;
 class UNBChatInput;
 
 UCLASS()
@@ -14,14 +15,30 @@ class NUMBERBASEBALL_API ANBPlayerController : public APlayerController
 	GENERATED_BODY()
 
   protected:
+	// 알림 텍스트 위젯
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> NotificationTextWidgetClass;
+	UPROPERTY()
+	TObjectPtr<UUserWidget> NotificationTextWidgetInstance;
+
+	// 채팅 입력 위젯
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UNBChatInput> ChatInputWidgetClass;
-
 	UPROPERTY()
 	TObjectPtr<UNBChatInput> ChatInputWidgetInstance;
 
 	// 채팅 메시지 캐시
 	FString ChatMessageString;
+
+  public:
+	// 알림 텍스트
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	FText NotificationText;
+
+  public:
+	ANBPlayerController();
+
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
   protected:
 	virtual void BeginPlay() override;

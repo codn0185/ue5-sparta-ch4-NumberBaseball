@@ -39,6 +39,9 @@ void ANBGameModeBase::OnPostLogin(AController* NewPlayer)
 		// 플레이어 추가
 		AllPlayerControllers.Add(NBPlayerController);
 
+		// 알림 텍스트 설정
+		NBPlayerController->NotificationText = FText::FromString(TEXT("Connected to the game server."));
+
 		// PlayerState 확인
 		ANBPlayerState* NBPlayerState = NBPlayerController->GetPlayerState<ANBPlayerState>();
 		if (IsValid(NBPlayerState))

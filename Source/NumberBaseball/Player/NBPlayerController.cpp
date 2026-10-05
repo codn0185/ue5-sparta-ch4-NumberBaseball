@@ -6,8 +6,22 @@
 #include "Game/NBGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Net/UnrealNetwork.h"
 #include "Player/NBPlayerState.h"
 #include "UI/NBChatInput.h"
+
+ANBPlayerController::ANBPlayerController()
+{
+	// 레플리케이션 활성화
+	bReplicates = true;
+}
+
+void ANBPlayerController::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, NotificationText);
+}
 
 void ANBPlayerController::BeginPlay()
 {
@@ -21,6 +35,7 @@ void ANBPlayerController::BeginPlay()
 	FInputModeUIOnly InputModeUIOnly;
 	SetInputMode(InputModeUIOnly);
 
+	// 채팅 위젯 인스턴스 생성
 	if (IsValid(ChatInputWidgetClass))
 	{
 		ChatInputWidgetInstance = CreateWidget<UNBChatInput>(this, ChatInputWidgetClass);
@@ -31,6 +46,16 @@ void ANBPlayerController::BeginPlay()
 
 			// 델리게이트 바인딩
 			ChatInputWidgetInstance->OnTextCommitted.BindUObject(this, &ThisClass::OnTextCommitted);
+		}
+	}
+
+	// 알림 위젯 인스턴스 생성
+	if (IsValid(NotificationTextWidgetClass))
+	{
+		NotificationTextWidgetInstance = CreateWidget<UUserWidget>(this, NotificationTextWidgetClass);
+		if (IsValid(NotificationTextWidgetInstance))
+		{
+			NotificationTextWidgetInstance->AddToViewport();
 		}
 	}
 }
