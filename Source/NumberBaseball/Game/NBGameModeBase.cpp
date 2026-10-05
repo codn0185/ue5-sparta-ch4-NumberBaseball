@@ -159,7 +159,8 @@ void ANBGameModeBase::PrintChatMessageString(ANBPlayerController* InChattingPlay
 	}
 
 	// 정답 유추 채팅
-	if (IsGuessNumberString(InChatMessageString))
+	if (NBPlayerState->CurrentGuessCount < NBPlayerState->MaxGuessCount // 유추 횟수 남음
+		&& IsGuessNumberString(InChatMessageString))                    // 유추 채팅 맞음
 	{
 		// 유추 횟수 증가
 		IncreaseGuessCount(InChattingPlayerController);
