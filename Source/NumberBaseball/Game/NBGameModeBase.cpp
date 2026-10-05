@@ -231,10 +231,10 @@ void ANBGameModeBase::ResetGame()
 	SecretNumberString = GenerateSecretNumber();
 	UE_LOG(LogTemp, Error, TEXT("%s"), *SecretNumberString);
 
-	// 모든 플레이어의 추측 횟수 초기화
 	for (const auto& NBPlayerController : AllPlayerControllers)
 	{
-		ANBPlayerState* NBPlayerState = Cast<ANBPlayerState>(NBPlayerController);
+		// 추측 횟수 초기화
+		ANBPlayerState* NBPlayerState = NBPlayerController->GetPlayerState<ANBPlayerState>();
 		if (IsValid(NBPlayerState))
 		{
 			NBPlayerState->CurrentGuessCount = 0;
