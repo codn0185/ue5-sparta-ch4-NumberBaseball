@@ -170,12 +170,15 @@ void ANBGameModeBase::PrintChatMessageString(ANBPlayerController* InChattingPlay
 		FString JudgeResultString = Result.ToString();
 		for (TObjectPtr<ANBPlayerController> NBPlayerController : AllPlayerControllers)
 		{
-			if (IsValid(NBPlayerController) == true)
+			if (IsValid(NBPlayerController))
 			{
 				const FString CombinedMessageString = PrefixMessageString + InChatMessageString + TEXT(" -> ") + JudgeResultString;
 				NBPlayerController->ClientRPCPrintChatMessageString(CombinedMessageString);
 			}
 		}
+
+		// 게임 판정
+		JudgeGame(InChattingPlayerController, Result);
 	}
 	// 일반 채팅
 	else
@@ -240,4 +243,56 @@ void ANBGameModeBase::ResetGame()
 			NBPlayerState->CurrentGuessCount = 0;
 		}
 	}
+}
+
+void ANBGameModeBase::JudgeGame(ANBPlayerController* InChattingPlayerController, const FResult Result)
+{
+	if (!IsValid(InChattingPlayerController))
+	{
+		return;
+	}
+
+	ANBPlayerState* ChattingPlayerState = InChattingPlayerController->GetPlayerState<ANBPlayerState>();
+	if (!IsValid(ChattingPlayerState))
+	{
+		return;
+	}
+
+	// 게임 승리 (해당 플레이어가 승리함)
+	if (Result.bIsCorrect)
+	{
+		// 승리 알림
+		const FText WinNotificationText = FText::FromString(ChattingPlayerState->PlayerNameString + TEXT(" has won the game."));
+		for (const auto& NBPlayerController : AllPlayerControllers)
+		{
+			NBPlayerController->SetNotificationText(WinNotificationText, 10.f);
+		}
+
+		ResetGame();
+		return;
+	}
+
+	// 무승부 확인 (모든 플레이어가 유추 횟수를 전부 소모했지만, 승리한 플레이어가 없음)
+	// 모든 플레이어의 남은 유추 횟수 확인
+	for (const auto& NBPlayerController : AllPlayerControllers)
+	{
+		ANBPlayerState* NBPlayerState = NBPlayerController->GetPlayerState<ANBPlayerState>();
+		if (IsValid(NBPlayerState))
+		{
+			// 유추 횟수가 남음 -> 게임이 종료되지 않음
+			if (NBPlayerState->CurrentGuessCount < NBPlayerState->MaxGuessCount)
+			{
+				return;
+			}
+		}
+	}
+
+	// 무승부 알림
+	const FText DrawNotificationText = FText::FromString(TEXT("Draw..."));
+	for (const auto& NBPlayerController : AllPlayerControllers)
+	{
+		NBPlayerController->SetNotificationText(DrawNotificationText, 10.f);
+	}
+
+	ResetGame();
 }

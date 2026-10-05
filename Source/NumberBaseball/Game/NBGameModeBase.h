@@ -64,4 +64,7 @@ class NUMBERBASEBALL_API ANBGameModeBase : public AGameModeBase
   public:
 	// 게임 초기회
 	void ResetGame();
+
+	// 게임 판정
+	void JudgeGame(ANBPlayerController* InChattingPlayerController, const FResult Result);
 };
