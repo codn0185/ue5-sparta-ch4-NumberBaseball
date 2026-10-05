@@ -60,6 +60,29 @@ void ANBPlayerController::BeginPlay()
 	}
 }
 
+void ANBPlayerController::SetNotificationText(const FText& InNotificationText, const float LifeTime)
+{
+	// 기존 타이머 제거
+	GetWorldTimerManager().ClearTimer(NotificationTimerHandle);
+
+	// 알림 텍스트 설정
+	NotificationText = InNotificationText;
+
+	// 일정 시간 뒤 사라짐
+	if (LifeTime > 0.f)
+	{
+		GetWorldTimerManager().SetTimer(
+			NotificationTimerHandle,
+			[this]()
+			{
+				// 알림 텍스트 제거
+				NotificationText = FText();
+			},
+			LifeTime,
+			false);
+	}
+}
+
 void ANBPlayerController::SetChatMessageString(const FString& InChatMessageString)
 {
 	ChatMessageString = InChatMessageString;

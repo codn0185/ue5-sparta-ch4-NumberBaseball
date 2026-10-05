@@ -35,6 +35,10 @@ class NUMBERBASEBALL_API ANBPlayerController : public APlayerController
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	FText NotificationText;
 
+  protected:
+	// 알림 텍스트 제거 타이머 핸들
+	FTimerHandle NotificationTimerHandle;
+
   public:
 	ANBPlayerController();
 
@@ -42,6 +46,10 @@ class NUMBERBASEBALL_API ANBPlayerController : public APlayerController
 
   protected:
 	virtual void BeginPlay() override;
+
+  public:
+	// 알림 텍스트 설정
+	void SetNotificationText(const FText& InNotificationText, const float LifeTime = 0.f);
 
   public:
 	// 채팅 메시지 캐시 설정
