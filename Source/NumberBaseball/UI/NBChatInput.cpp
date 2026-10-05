@@ -27,17 +27,19 @@ void UNBChatInput::NativeDestruct()
 void UNBChatInput::OnChatInputTextCommitted(const FText& Text, ETextCommit::Type CommitMethod)
 {
 	// Enter 키 입력
-	if (CommitMethod == ETextCommit::OnEnter)
+	if (CommitMethod != ETextCommit::OnEnter)
 	{
-		OnTextCommitted.ExecuteIfBound(Text, CommitMethod);
-
-		EditableTextBox_ChatInput->SetText(FText::GetEmpty());
-
-		GetWorld()->GetTimerManager().SetTimerForNextTick(
-			FTimerDelegate::CreateLambda(
-				[this]()
-				{
-					EditableTextBox_ChatInput->SetKeyboardFocus();
-				}));
+		return;
 	}
+
+	OnTextCommitted.ExecuteIfBound(Text, CommitMethod);
+
+	EditableTextBox_ChatInput->SetText(FText::GetEmpty());
+
+	GetWorld()->GetTimerManager().SetTimerForNextTick(
+		FTimerDelegate::CreateLambda(
+			[this]()
+			{
+				EditableTextBox_ChatInput->SetKeyboardFocus();
+			}));
 }
