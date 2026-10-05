@@ -224,3 +224,20 @@ void ANBGameModeBase::IncreaseGuessCount(ANBPlayerController* InChattingPlayerCo
 
 	NBPlayerState->CurrentGuessCount++;
 }
+
+void ANBGameModeBase::ResetGame()
+{
+	// 새로운 숫자 생성
+	SecretNumberString = GenerateSecretNumber();
+	UE_LOG(LogTemp, Error, TEXT("%s"), *SecretNumberString);
+
+	// 모든 플레이어의 추측 횟수 초기화
+	for (const auto& NBPlayerController : AllPlayerControllers)
+	{
+		ANBPlayerState* NBPlayerState = Cast<ANBPlayerState>(NBPlayerController);
+		if (IsValid(NBPlayerState))
+		{
+			NBPlayerState->CurrentGuessCount = 0;
+		}
+	}
+}

@@ -60,4 +60,8 @@ class NUMBERBASEBALL_API ANBGameModeBase : public AGameModeBase
 
 	// 플레이어의 유추 횟수 증가
 	void IncreaseGuessCount(ANBPlayerController* InChattingPlayerController);
+
+  public:
+	// 게임 초기회
+	void ResetGame();
 };
