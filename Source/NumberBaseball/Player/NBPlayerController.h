@@ -8,6 +8,7 @@
 
 class UUserWidget;
 class UNBChatWidget;
+class UNBNotificationWidget;
 
 struct FNBChatData;
 
@@ -23,23 +24,14 @@ class NUMBERBASEBALL_API ANBPlayerController : public APlayerController
 	UPROPERTY()
 	TObjectPtr<UNBChatWidget> ChatWidgetInstance;
 
-	// 알림 텍스트 위젯
+	// 공지 위젯
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> NotificationTextWidgetClass;
+	TSubclassOf<UNBNotificationWidget> UNBNotificationWidgetClass;
 	UPROPERTY()
-	TObjectPtr<UUserWidget> NotificationTextWidgetInstance;
+	TObjectPtr<UNBNotificationWidget> UNBNotificationWidgetInstance;
 
 	// 채팅 메시지 캐시
 	FString ChatMessageString;
-
-  public:
-	// 알림 텍스트
-	UPROPERTY(Replicated, BlueprintReadOnly)
-	FText NotificationText;
-
-  protected:
-	// 알림 텍스트 제거 타이머 핸들
-	FTimerHandle NotificationTimerHandle;
 
   public:
 	ANBPlayerController();
@@ -48,10 +40,6 @@ class NUMBERBASEBALL_API ANBPlayerController : public APlayerController
 
   protected:
 	virtual void BeginPlay() override;
-
-  public:
-	// 알림 텍스트 설정
-	void SetNotificationText(const FText& InNotificationText, const float LifeTime = 0.f);
 
   public:
 	// 채팅 메시지 캐시 설정
@@ -80,4 +68,8 @@ class NUMBERBASEBALL_API ANBPlayerController : public APlayerController
 	// 채팅 메시지 클리어 (클라이언트 실행 RPC)
 	UFUNCTION(Client, Reliable)
 	void ClientRPCClearChat();
+
+	// 공지 알림 (클라이언트 실행 RPC)
+	UFUNCTION(Client, Reliable)
+	void ClientRPCShowNotification(const FText& NotificationText, const float Lifetime = 0.f);
 };

@@ -40,9 +40,8 @@ void ANBGameModeBase::OnPostLogin(AController* NewPlayer)
 		// 플레이어 추가
 		AllPlayerControllers.Add(NBPlayerController);
 
-		// 알림 텍스트 설정
-		// NBPlayerController->NotificationText = FText::FromString(TEXT("Connected to the game server."));
-		NBPlayerController->SetNotificationText(FText::FromString(TEXT("Connected to the game server.")), 3.f);
+		// 입장 알림
+		NBPlayerController->ClientRPCShowNotification(FText::FromString(TEXT("Connected to the game server.")), 3.f);
 
 		// PlayerState 확인
 		ANBPlayerState* NBPlayerState = NBPlayerController->GetPlayerState<ANBPlayerState>();
@@ -274,7 +273,7 @@ void ANBGameModeBase::JudgeGame(ANBPlayerController* InChattingPlayerController,
 		const FText WinNotificationText = FText::FromString(ChattingPlayerState->PlayerNameString + TEXT(" has won the game."));
 		for (const auto& NBPlayerController : AllPlayerControllers)
 		{
-			NBPlayerController->SetNotificationText(WinNotificationText, 10.f);
+			NBPlayerController->ClientRPCShowNotification(WinNotificationText, 10.f);
 		}
 
 		ResetGame();
@@ -300,7 +299,7 @@ void ANBGameModeBase::JudgeGame(ANBPlayerController* InChattingPlayerController,
 	const FText DrawNotificationText = FText::FromString(TEXT("Draw..."));
 	for (const auto& NBPlayerController : AllPlayerControllers)
 	{
-		NBPlayerController->SetNotificationText(DrawNotificationText, 10.f);
+		NBPlayerController->ClientRPCShowNotification(DrawNotificationText, 10.f);
 	}
 
 	ResetGame();

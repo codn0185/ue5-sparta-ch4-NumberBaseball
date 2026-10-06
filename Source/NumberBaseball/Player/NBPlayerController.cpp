@@ -9,6 +9,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Player/NBPlayerState.h"
 #include "UI/NBChatWidget.h"
+#include "UI/NBNotificationWidget.h"
 
 ANBPlayerController::ANBPlayerController()
 {
@@ -19,8 +20,6 @@ ANBPlayerController::ANBPlayerController()
 void ANBPlayerController::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ThisClass, NotificationText);
 }
 
 void ANBPlayerController::BeginPlay()
@@ -42,7 +41,7 @@ void ANBPlayerController::BeginPlay()
 
 		if (IsValid(ChatWidgetInstance))
 		{
-			ChatWidgetInstance->AddToViewport();
+			ChatWidgetInstance->AddToViewport(1);
 
 			// 델리게이트 바인딩
 			ChatWidgetInstance->OnTextCommitted.BindUObject(this, &ThisClass::OnTextCommitted);
@@ -50,36 +49,13 @@ void ANBPlayerController::BeginPlay()
 	}
 
 	// 알림 위젯 인스턴스 생성
-	if (IsValid(NotificationTextWidgetClass))
+	if (IsValid(UNBNotificationWidgetClass))
 	{
-		NotificationTextWidgetInstance = CreateWidget<UUserWidget>(this, NotificationTextWidgetClass);
-		if (IsValid(NotificationTextWidgetInstance))
+		UNBNotificationWidgetInstance = CreateWidget<UNBNotificationWidget>(this, UNBNotificationWidgetClass);
+		if (IsValid(UNBNotificationWidgetInstance))
 		{
-			NotificationTextWidgetInstance->AddToViewport();
+			UNBNotificationWidgetInstance->AddToViewport(0);
 		}
-	}
-}
-
-void ANBPlayerController::SetNotificationText(const FText& InNotificationText, const float LifeTime)
-{
-	// 기존 타이머 제거
-	GetWorldTimerManager().ClearTimer(NotificationTimerHandle);
-
-	// 알림 텍스트 설정
-	NotificationText = InNotificationText;
-
-	// 일정 시간 뒤 사라짐
-	if (LifeTime > 0.f)
-	{
-		GetWorldTimerManager().SetTimer(
-			NotificationTimerHandle,
-			[this]()
-			{
-				// 알림 텍스트 제거
-				NotificationText = FText();
-			},
-			LifeTime,
-			false);
 	}
 }
 
@@ -108,16 +84,6 @@ void ANBPlayerController::OnTextCommitted(const FText& Text, ETextCommit::Type C
 	SetChatMessageString(Text.ToString());
 }
 
-void ANBPlayerController::ClientRPCReceiveChat_Implementation(const FNBChatData& ChatData)
-{
-	ChatWidgetInstance->Add(ChatData);
-}
-
-void ANBPlayerController::ClientRPCClearChat_Implementation()
-{
-	ChatWidgetInstance->Clear();
-}
-
 void ANBPlayerController::ClientRPCPrintChatMessageString_Implementation(const FString& InChatMessageString)
 {
 	PrintChatMessageString(InChatMessageString);
@@ -133,5 +99,29 @@ void ANBPlayerController::ServerRPCPrintChatMessageString_Implementation(const F
 		{
 			NBGameMode->PrintChatMessageString(this, InChatMessageString);
 		}
+	}
+}
+
+void ANBPlayerController::ClientRPCReceiveChat_Implementation(const FNBChatData& ChatData)
+{
+	if (IsValid(ChatWidgetInstance))
+	{
+		ChatWidgetInstance->Add(ChatData);
+	}
+}
+
+void ANBPlayerController::ClientRPCClearChat_Implementation()
+{
+	if (IsValid(ChatWidgetInstance))
+	{
+		ChatWidgetInstance->Clear();
+	}
+}
+
+void ANBPlayerController::ClientRPCShowNotification_Implementation(const FText& NotificationText, const float Lifetime)
+{
+	if (IsValid(UNBNotificationWidgetInstance))
+	{
+		UNBNotificationWidgetInstance->SetNotificationText(NotificationText, Lifetime);
 	}
 }
