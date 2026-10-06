@@ -1,6 +1,7 @@
 ﻿#include "UI/GameHUD.h"
 
 #include "UI/NBChatWidget.h"
+#include "UI/NBNotificationWidget.h"
 
 void UGameHUD::NativeConstruct()
 {
@@ -10,12 +11,26 @@ void UGameHUD::NativeConstruct()
 
 void UGameHUD::AddChat(const FNBChatData& ChatData)
 {
-	ChatWidget->Add(ChatData);
+	if (IsValid(ChatWidget))
+	{
+		ChatWidget->Add(ChatData);
+	}
 }
 
 void UGameHUD::ClearChat()
 {
-	ChatWidget->Clear();
+	if (IsValid(ChatWidget))
+	{
+		ChatWidget->Clear();
+	}
+}
+
+void UGameHUD::ShowNotification(const FText& NotifiactionText, const float Lifetime)
+{
+	if (IsValid(NotificationWidget))
+	{
+		NotificationWidget->SetNotificationText(NotifiactionText, Lifetime);
+	}
 }
 
 void UGameHUD::OnChatInputTextCommitted(const FText& Text, ETextCommit::Type CommitMethod)
