@@ -1,15 +1,15 @@
-﻿#include "UI/GameHUD.h"
+﻿#include "UI/NBGameHUD.h"
 
 #include "UI/NBChatWidget.h"
 #include "UI/NBNotificationWidget.h"
 
-void UGameHUD::NativeConstruct()
+void UNBGameHUD::NativeConstruct()
 {
 	// 이벤트 바인딩 추가
 	ChatWidget->OnTextCommitted.BindUObject(this, &ThisClass::OnChatInputTextCommitted);
 }
 
-void UGameHUD::AddChat(const FNBChatData& ChatData)
+void UNBGameHUD::AddChat(const FNBChatData& ChatData)
 {
 	if (IsValid(ChatWidget))
 	{
@@ -17,7 +17,7 @@ void UGameHUD::AddChat(const FNBChatData& ChatData)
 	}
 }
 
-void UGameHUD::ClearChat()
+void UNBGameHUD::ClearChat()
 {
 	if (IsValid(ChatWidget))
 	{
@@ -25,7 +25,7 @@ void UGameHUD::ClearChat()
 	}
 }
 
-void UGameHUD::ShowNotification(const FText& NotifiactionText, const float Lifetime)
+void UNBGameHUD::ShowNotification(const FText& NotifiactionText, const float Lifetime)
 {
 	if (IsValid(NotificationWidget))
 	{
@@ -33,7 +33,7 @@ void UGameHUD::ShowNotification(const FText& NotifiactionText, const float Lifet
 	}
 }
 
-void UGameHUD::OnChatInputTextCommitted(const FText& Text, ETextCommit::Type CommitMethod)
+void UNBGameHUD::OnChatInputTextCommitted(const FText& Text, ETextCommit::Type CommitMethod)
 {
 	// 채팅 입력 델리게이트 송출
 	OnTextCommitted.ExecuteIfBound(Text, CommitMethod);

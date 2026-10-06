@@ -8,7 +8,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/NBPlayerState.h"
-#include "UI/GameHUD.h"
+#include "UI/NBGameHUD.h"
 
 ANBPlayerController::ANBPlayerController()
 {
@@ -36,7 +36,7 @@ void ANBPlayerController::BeginPlay()
 	// GameHUD 위젯 생성
 	if (IsValid(GameHUDClass))
 	{
-		GameHUDInstance = CreateWidget<UGameHUD>(this, GameHUDClass);
+		GameHUDInstance = CreateWidget<UNBGameHUD>(this, GameHUDClass);
 		if (IsValid(GameHUDInstance))
 		{
 			GameHUDInstance->AddToViewport();

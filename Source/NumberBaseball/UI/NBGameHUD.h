@@ -4,7 +4,7 @@
 
 #include "Blueprint/UserWidget.h"
 
-#include "GameHUD.generated.h"
+#include "NBGameHUD.generated.h"
 
 class UNBChatWidget;
 class UNBNotificationWidget;
@@ -12,7 +12,7 @@ class UNBNotificationWidget;
 struct FNBChatData;
 
 UCLASS()
-class NUMBERBASEBALL_API UGameHUD : public UUserWidget
+class NUMBERBASEBALL_API UNBGameHUD : public UUserWidget
 {
 	GENERATED_BODY()
 
