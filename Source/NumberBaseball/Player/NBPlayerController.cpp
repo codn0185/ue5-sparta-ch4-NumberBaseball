@@ -8,8 +8,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/NBPlayerState.h"
-#include "UI/NBChatWidget.h"
-#include "UI/NBNotificationWidget.h"
+#include "UI/GameHUD.h"
 
 ANBPlayerController::ANBPlayerController()
 {
@@ -34,27 +33,16 @@ void ANBPlayerController::BeginPlay()
 	FInputModeUIOnly InputModeUIOnly;
 	SetInputMode(InputModeUIOnly);
 
-	// 채팅 위젯 인스턴스 생성
-	if (IsValid(ChatWidgetClass))
+	// GameHUD 위젯 생성
+	if (IsValid(GameHUDClass))
 	{
-		ChatWidgetInstance = CreateWidget<UNBChatWidget>(this, ChatWidgetClass);
-
-		if (IsValid(ChatWidgetInstance))
+		GameHUDInstance = CreateWidget<UGameHUD>(this, GameHUDClass);
+		if (IsValid(GameHUDInstance))
 		{
-			ChatWidgetInstance->AddToViewport(1);
+			GameHUDInstance->AddToViewport();
 
 			// 델리게이트 바인딩
-			ChatWidgetInstance->OnTextCommitted.BindUObject(this, &ThisClass::OnTextCommitted);
-		}
-	}
-
-	// 알림 위젯 인스턴스 생성
-	if (IsValid(UNBNotificationWidgetClass))
-	{
-		UNBNotificationWidgetInstance = CreateWidget<UNBNotificationWidget>(this, UNBNotificationWidgetClass);
-		if (IsValid(UNBNotificationWidgetInstance))
-		{
-			UNBNotificationWidgetInstance->AddToViewport(0);
+			GameHUDInstance->OnTextCommitted.BindUObject(this, &ThisClass::OnTextCommitted);
 		}
 	}
 }
@@ -104,24 +92,24 @@ void ANBPlayerController::ServerRPCPrintChatMessageString_Implementation(const F
 
 void ANBPlayerController::ClientRPCReceiveChat_Implementation(const FNBChatData& ChatData)
 {
-	if (IsValid(ChatWidgetInstance))
+	if (IsValid(GameHUDInstance))
 	{
-		ChatWidgetInstance->Add(ChatData);
+		GameHUDInstance->AddChat(ChatData);
 	}
 }
 
 void ANBPlayerController::ClientRPCClearChat_Implementation()
 {
-	if (IsValid(ChatWidgetInstance))
+	if (IsValid(GameHUDInstance))
 	{
-		ChatWidgetInstance->Clear();
+		GameHUDInstance->ClearChat();
 	}
 }
 
 void ANBPlayerController::ClientRPCShowNotification_Implementation(const FText& NotificationText, const float Lifetime)
 {
-	if (IsValid(UNBNotificationWidgetInstance))
+	if (IsValid(GameHUDInstance))
 	{
-		UNBNotificationWidgetInstance->SetNotificationText(NotificationText, Lifetime);
+		GameHUDInstance->ShowNotification(NotificationText, Lifetime);
 	}
 }

@@ -6,9 +6,7 @@
 
 #include "NBPlayerController.generated.h"
 
-class UUserWidget;
-class UNBChatWidget;
-class UNBNotificationWidget;
+class UGameHUD;
 
 struct FNBChatData;
 
@@ -18,17 +16,11 @@ class NUMBERBASEBALL_API ANBPlayerController : public APlayerController
 	GENERATED_BODY()
 
   protected:
-	// 채팅 위젯
+	// GameHUD 위젯
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UNBChatWidget> ChatWidgetClass;
+	TSubclassOf<UGameHUD> GameHUDClass;
 	UPROPERTY()
-	TObjectPtr<UNBChatWidget> ChatWidgetInstance;
-
-	// 공지 위젯
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UNBNotificationWidget> UNBNotificationWidgetClass;
-	UPROPERTY()
-	TObjectPtr<UNBNotificationWidget> UNBNotificationWidgetInstance;
+	TObjectPtr<UGameHUD> GameHUDInstance;
 
 	// 채팅 메시지 캐시
 	FString ChatMessageString;
