@@ -2,6 +2,15 @@
 
 #include "Components/TextBlock.h"
 
+void UNBNotificationWidget::NativeConstruct()
+{
+	// 빈 텍스트 설정
+	if (IsValid(TextBlock_Notification))
+	{
+		TextBlock_Notification->SetText(FText());
+	}
+}
+
 void UNBNotificationWidget::SetNotificationText(const FText& NotifiactionText, const float Lifetime)
 {
 	// 기존 타이머 제거

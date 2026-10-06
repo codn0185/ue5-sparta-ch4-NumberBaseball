@@ -20,6 +20,9 @@ class NUMBERBASEBALL_API UNBNotificationWidget : public UUserWidget
 	// 수명 관리 타이머 핸들
 	FTimerHandle NotificationTimerHandle;
 
+  protected:
+	virtual void NativeConstruct() override;
+
   public:
 	void SetNotificationText(const FText& NotifiactionText, const float Lifetime = 0.f);
 
