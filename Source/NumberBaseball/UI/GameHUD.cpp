@@ -35,6 +35,6 @@ void UGameHUD::ShowNotification(const FText& NotifiactionText, const float Lifet
 
 void UGameHUD::OnChatInputTextCommitted(const FText& Text, ETextCommit::Type CommitMethod)
 {
-	// 브로드캐스트 송출
+	// 채팅 입력 델리게이트 송출
 	OnTextCommitted.ExecuteIfBound(Text, CommitMethod);
 }
