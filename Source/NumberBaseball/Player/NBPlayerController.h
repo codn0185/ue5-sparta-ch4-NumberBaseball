@@ -7,7 +7,9 @@
 #include "NBPlayerController.generated.h"
 
 class UUserWidget;
-class UNBChatInput;
+class UNBChatWidget;
+
+struct FNBChatData;
 
 UCLASS()
 class NUMBERBASEBALL_API ANBPlayerController : public APlayerController
@@ -15,17 +17,17 @@ class NUMBERBASEBALL_API ANBPlayerController : public APlayerController
 	GENERATED_BODY()
 
   protected:
+	// 채팅 위젯
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UNBChatWidget> ChatWidgetClass;
+	UPROPERTY()
+	TObjectPtr<UNBChatWidget> ChatWidgetInstance;
+
 	// 알림 텍스트 위젯
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> NotificationTextWidgetClass;
 	UPROPERTY()
 	TObjectPtr<UUserWidget> NotificationTextWidgetInstance;
-
-	// 채팅 입력 위젯
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UNBChatInput> ChatInputWidgetClass;
-	UPROPERTY()
-	TObjectPtr<UNBChatInput> ChatInputWidgetInstance;
 
 	// 채팅 메시지 캐시
 	FString ChatMessageString;
@@ -70,4 +72,12 @@ class NUMBERBASEBALL_API ANBPlayerController : public APlayerController
 	// 채팅 메시지 출략 (서버 실행 RPC)
 	UFUNCTION(Server, Reliable)
 	void ServerRPCPrintChatMessageString(const FString& InChatMessageString);
+
+	// 채팅 메시지 받기 (클라이언트 실행 RPC)
+	UFUNCTION(Client, Reliable)
+	void ClientRPCReceiveChat(const FNBChatData& ChatData);
+
+	// 채팅 메시지 클리어 (클라이언트 실행 RPC)
+	UFUNCTION(Client, Reliable)
+	void ClientRPCClearChat();
 };

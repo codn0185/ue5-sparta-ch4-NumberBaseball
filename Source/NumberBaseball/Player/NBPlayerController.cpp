@@ -8,7 +8,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/NBPlayerState.h"
-#include "UI/NBChatInput.h"
+#include "UI/NBChatWidget.h"
 
 ANBPlayerController::ANBPlayerController()
 {
@@ -36,16 +36,16 @@ void ANBPlayerController::BeginPlay()
 	SetInputMode(InputModeUIOnly);
 
 	// 채팅 위젯 인스턴스 생성
-	if (IsValid(ChatInputWidgetClass))
+	if (IsValid(ChatWidgetClass))
 	{
-		ChatInputWidgetInstance = CreateWidget<UNBChatInput>(this, ChatInputWidgetClass);
+		ChatWidgetInstance = CreateWidget<UNBChatWidget>(this, ChatWidgetClass);
 
-		if (IsValid(ChatInputWidgetInstance))
+		if (IsValid(ChatWidgetInstance))
 		{
-			ChatInputWidgetInstance->AddToViewport();
+			ChatWidgetInstance->AddToViewport();
 
 			// 델리게이트 바인딩
-			ChatInputWidgetInstance->OnTextCommitted.BindUObject(this, &ThisClass::OnTextCommitted);
+			ChatWidgetInstance->OnTextCommitted.BindUObject(this, &ThisClass::OnTextCommitted);
 		}
 	}
 
@@ -106,6 +106,16 @@ void ANBPlayerController::PrintChatMessageString(const FString& InChatMessageStr
 void ANBPlayerController::OnTextCommitted(const FText& Text, ETextCommit::Type CommitMethod)
 {
 	SetChatMessageString(Text.ToString());
+}
+
+void ANBPlayerController::ClientRPCReceiveChat_Implementation(const FNBChatData& ChatData)
+{
+	ChatWidgetInstance->Add(ChatData);
+}
+
+void ANBPlayerController::ClientRPCClearChat_Implementation()
+{
+	ChatWidgetInstance->Clear();
 }
 
 void ANBPlayerController::ClientRPCPrintChatMessageString_Implementation(const FString& InChatMessageString)

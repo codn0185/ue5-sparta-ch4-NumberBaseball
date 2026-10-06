@@ -6,17 +6,32 @@
 
 #include "NBChatItemData.generated.h"
 
+USTRUCT()
+struct FNBChatData
+{
+	GENERATED_BODY()
+
+  public:
+	// 이름
+	UPROPERTY()
+	FText NameText;
+	UPROPERTY()
+	FColor NameColor;
+
+	// 메시지
+	UPROPERTY()
+	FText MessageText;
+	UPROPERTY()
+	FColor MessageColor;
+};
+
 UCLASS()
 class NUMBERBASEBALL_API UNBChatItemData : public UObject
 {
 	GENERATED_BODY()
 
   public:
-	// 이름
-	FText NameText;
-	FColor NameColor;
-
-	// 메시지
-	FText MessageText;
-	FColor MessageColor;
+	// 채팅 데이터
+	UPROPERTY()
+	FNBChatData ChatData;
 };

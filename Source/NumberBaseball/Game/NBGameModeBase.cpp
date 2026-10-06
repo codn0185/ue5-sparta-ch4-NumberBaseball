@@ -4,6 +4,7 @@
 #include "Game/NBGameStateBase.h"
 #include "Player/NBPlayerController.h"
 #include "Player/NBPlayerState.h"
+#include "UI/Data/NBChatItemData.h"
 
 FString FResult::ToString() const
 {
@@ -158,13 +159,17 @@ void ANBGameModeBase::PrintChatMessageString(ANBPlayerController* InChattingPlay
 		return;
 	}
 
+	// 채팅 데이터
+	FNBChatData ChatData;
+	ChatData.NameText = FText::FromString(NBPlayerState->PlayerNameString);
+	ChatData.NameColor = FColor::Cyan;
+
 	// 정답 유추 채팅
 	if (NBPlayerState->CurrentGuessCount < NBPlayerState->MaxGuessCount // 유추 횟수 남음
 		&& IsGuessNumberString(InChatMessageString))                    // 유추 채팅 맞음
 	{
 		// 유추 횟수 증가
 		IncreaseGuessCount(InChattingPlayerController);
-		const FString PrefixMessageString = NBPlayerState->GetPlayerInfoString() + TEXT(": ");
 
 		// 모든 플레이어에 유추 결과 메시지 출력
 		FResult Result = JudgeResult(SecretNumberString, InChatMessageString);
@@ -173,8 +178,10 @@ void ANBGameModeBase::PrintChatMessageString(ANBPlayerController* InChattingPlay
 		{
 			if (IsValid(NBPlayerController))
 			{
-				const FString CombinedMessageString = PrefixMessageString + InChatMessageString + TEXT(" -> ") + JudgeResultString;
-				NBPlayerController->ClientRPCPrintChatMessageString(CombinedMessageString);
+				ChatData.MessageText = FText::FromString(InChatMessageString + TEXT(" -> ") + JudgeResultString);
+				ChatData.MessageColor = FColor::White;
+
+				NBPlayerController->ClientRPCReceiveChat(ChatData);
 			}
 		}
 
@@ -185,13 +192,14 @@ void ANBGameModeBase::PrintChatMessageString(ANBPlayerController* InChattingPlay
 	else
 	{
 		// 모든 플레이어에 일반 채팅 메시지 출력
-		const FString PrefixMessageString = NBPlayerState->GetPlayerInfoString() + TEXT(": ");
 		for (TObjectPtr<ANBPlayerController> NBPlayerController : AllPlayerControllers)
 		{
 			if (IsValid(NBPlayerController))
 			{
-				const FString CombinedMessageString = PrefixMessageString + InChatMessageString;
-				NBPlayerController->ClientRPCPrintChatMessageString(CombinedMessageString);
+				ChatData.MessageText = FText::FromString(InChatMessageString);
+				ChatData.MessageColor = FColor::Yellow;
+
+				NBPlayerController->ClientRPCReceiveChat(ChatData);
 			}
 		}
 	}

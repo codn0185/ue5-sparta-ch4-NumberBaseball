@@ -11,9 +11,13 @@ void UNBChatItem::NativeOnListItemObjectSet(UObject* ListItemObject)
 		return;
 	}
 
-	TextBlock_Name->SetText(FText::Format(FText::FromString(TEXT("[{0}]")), ChatItemData->NameText));
-	TextBlock_Name->SetColorAndOpacity(ChatItemData->NameColor);
+	FNBChatData ChatData = ChatItemData->ChatData;
 
-	TextBlock_Message->SetText(ChatItemData->MessageText);
-	TextBlock_Message->SetColorAndOpacity(ChatItemData->MessageColor);
+	TextBlock_Name->SetText(FText::Format(FText::FromString(TEXT("[{0}]")), ChatData.NameText));
+	TextBlock_Name->SetColorAndOpacity(ChatData.NameColor);
+
+	TextBlock_Message->SetText(ChatData.MessageText);
+	TextBlock_Message->SetColorAndOpacity(ChatData.MessageColor);
+
+	UE_LOG(LogTemp, Warning, TEXT("채팅 아이템 추가 - [%s] %s"), *ChatData.NameText.ToString(), *ChatData.MessageText.ToString());
 }
