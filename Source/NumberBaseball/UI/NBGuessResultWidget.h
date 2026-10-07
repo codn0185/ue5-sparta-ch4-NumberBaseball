@@ -6,6 +6,8 @@
 
 #include "NBGuessResultWidget.generated.h"
 
+struct FNBGuessResultData;
+
 UCLASS()
 class NUMBERBASEBALL_API UNBGuessResultWidget : public UUserWidget
 {
@@ -16,7 +18,7 @@ class NUMBERBASEBALL_API UNBGuessResultWidget : public UUserWidget
 	TObjectPtr<class UListView> ListView_GuessResult;
 
   public:
-	void Add(const FString GuessNumberString, const int32 StrikeCount, const int32 BallCount);
+	void Add(const FNBGuessResultData& GuessResultData);
 
 	void Clear();
 };
