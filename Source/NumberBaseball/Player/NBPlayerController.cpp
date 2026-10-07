@@ -72,6 +72,24 @@ void ANBPlayerController::OnTextCommitted(const FText& Text, ETextCommit::Type C
 	SetChatMessageString(Text.ToString());
 }
 
+void ANBPlayerController::ClientRPCResetGame(const int32 MaxGuessCount)
+{
+	// UI 초기화
+	if (IsValid(GameHUDInstance))
+	{
+		GameHUDInstance->ClearChat();
+		GameHUDInstance->ClearGuessResult();
+	}
+
+	// 추측 횟수 초기화
+	ANBPlayerState* NBPlayerState = GetPlayerState<ANBPlayerState>();
+	if (IsValid(NBPlayerState))
+	{
+		NBPlayerState->CurrentGuessCount = 0;
+		NBPlayerState->MaxGuessCount = MaxGuessCount;
+	}
+}
+
 void ANBPlayerController::ClientRPCPrintChatMessageString_Implementation(const FString& InChatMessageString)
 {
 	PrintChatMessageString(InChatMessageString);

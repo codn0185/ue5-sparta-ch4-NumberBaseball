@@ -19,6 +19,7 @@ FString FResult::ToString() const
 ANBGameModeBase::ANBGameModeBase()
 {
 	NumberLength = 3;
+	MaxGuessCount = 3;
 }
 
 void ANBGameModeBase::BeginPlay()
@@ -244,11 +245,9 @@ void ANBGameModeBase::ResetGame()
 
 	for (const auto& NBPlayerController : AllPlayerControllers)
 	{
-		// 추측 횟수 초기화
-		ANBPlayerState* NBPlayerState = NBPlayerController->GetPlayerState<ANBPlayerState>();
-		if (IsValid(NBPlayerState))
+		if (IsValid(NBPlayerController))
 		{
-			NBPlayerState->CurrentGuessCount = 0;
+			NBPlayerController->ClientRPCResetGame(MaxGuessCount);
 		}
 	}
 }

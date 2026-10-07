@@ -46,11 +46,15 @@ class NUMBERBASEBALL_API ANBPlayerController : public APlayerController
 	void OnTextCommitted(const FText& Text, ETextCommit::Type CommitMethod);
 
   public:
-	// 채팅 메시지 출략 (클라이언트 실행 RPC)
+	// 게임 리셋 (클라이언트 실행 RPC)
+	UFUNCTION(Client, Reliable)
+	void ClientRPCResetGame(const int32 MaxGuessCount);
+
+	// 채팅 메시지 출력 (클라이언트 실행 RPC)
 	UFUNCTION(Client, Reliable)
 	void ClientRPCPrintChatMessageString(const FString& InChatMessageString);
 
-	// 채팅 메시지 출략 (서버 실행 RPC)
+	// 채팅 메시지 출력 (서버 실행 RPC)
 	UFUNCTION(Server, Reliable)
 	void ServerRPCPrintChatMessageString(const FString& InChatMessageString);
 

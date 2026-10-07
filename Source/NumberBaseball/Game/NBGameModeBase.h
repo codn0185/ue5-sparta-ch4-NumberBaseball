@@ -31,6 +31,8 @@ class NUMBERBASEBALL_API ANBGameModeBase : public AGameModeBase
   protected:
 	// 숫자 길이 (1 ~ 9)
 	int32 NumberLength;
+	// 최대 유추 횟수
+	int32 MaxGuessCount;
 
 	// 정답 숫자
 	FString SecretNumberString;
