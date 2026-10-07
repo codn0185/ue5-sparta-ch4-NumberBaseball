@@ -12,42 +12,27 @@ void UNBGameHUD::NativeConstruct()
 
 void UNBGameHUD::AddChat(const FNBChatData& ChatData)
 {
-	if (IsValid(ChatWidget))
-	{
-		ChatWidget->Add(ChatData);
-	}
+	ChatWidget->Add(ChatData);
 }
 
 void UNBGameHUD::ClearChat()
 {
-	if (IsValid(ChatWidget))
-	{
-		ChatWidget->Clear();
-	}
+	ChatWidget->Clear();
 }
 
 void UNBGameHUD::ShowNotification(const FText& NotifiactionText, const float Lifetime)
 {
-	if (IsValid(NotificationWidget))
-	{
-		NotificationWidget->SetNotificationText(NotifiactionText, Lifetime);
-	}
+	NotificationWidget->SetNotificationText(NotifiactionText, Lifetime);
 }
 
 void UNBGameHUD::AddGuessResult(const FNBGuessResultData& GuessResultData)
 {
-	if (IsValid(GuessResultWidget))
-	{
-		GuessResultWidget->Add(GuessResultData);
-	}
+	GuessResultWidget->Add(GuessResultData);
 }
 
 void UNBGameHUD::ClearGuessResult()
 {
-	if (IsValid(GuessResultWidget))
-	{
-		GuessResultWidget->Clear();
-	}
+	GuessResultWidget->Clear();
 }
 
 void UNBGameHUD::OnChatInputTextCommitted(const FText& Text, ETextCommit::Type CommitMethod)

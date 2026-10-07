@@ -5,10 +5,7 @@
 void UNBNotificationWidget::NativeConstruct()
 {
 	// 빈 텍스트 설정
-	if (IsValid(TextBlock_Notification))
-	{
-		TextBlock_Notification->SetText(FText());
-	}
+	TextBlock_Notification->SetText(FText());
 }
 
 void UNBNotificationWidget::SetNotificationText(const FText& NotifiactionText, const float Lifetime)
@@ -17,10 +14,7 @@ void UNBNotificationWidget::SetNotificationText(const FText& NotifiactionText, c
 	GetWorld()->GetTimerManager().ClearTimer(NotificationTimerHandle);
 
 	// 텍스트 설정
-	if (IsValid(TextBlock_Notification))
-	{
-		TextBlock_Notification->SetText(NotifiactionText);
-	}
+	TextBlock_Notification->SetText(NotifiactionText);
 
 	// 수명 설정
 	if (Lifetime > 0.f)
@@ -40,8 +34,5 @@ void UNBNotificationWidget::Clear()
 	GetWorld()->GetTimerManager().ClearTimer(NotificationTimerHandle);
 
 	// 텍스트 제거
-	if (IsValid(TextBlock_Notification))
-	{
-		TextBlock_Notification->SetText(FText());
-	}
+	TextBlock_Notification->SetText(FText());
 }
