@@ -62,7 +62,7 @@ void ANBPlayerController::SetChatMessageString(const FString& InChatMessageStrin
 	}
 }
 
-void ANBPlayerController::PrintChatMessageString(const FString& InChatMessageString)
+void ANBPlayerController::CheckChatMessageString(const FString& InChatMessageString)
 {
 	NBFunctionLibrary::MyPrintString(this, InChatMessageString, 10.f);
 }
@@ -92,7 +92,7 @@ void ANBPlayerController::ClientRPCResetGame(const int32 MaxGuessCount)
 
 void ANBPlayerController::ClientRPCPrintChatMessageString_Implementation(const FString& InChatMessageString)
 {
-	PrintChatMessageString(InChatMessageString);
+	CheckChatMessageString(InChatMessageString);
 }
 
 void ANBPlayerController::ServerRPCPrintChatMessageString_Implementation(const FString& InChatMessageString)
@@ -103,7 +103,7 @@ void ANBPlayerController::ServerRPCPrintChatMessageString_Implementation(const F
 		ANBGameModeBase* NBGameMode = Cast<ANBGameModeBase>(GameMode);
 		if (IsValid(NBGameMode))
 		{
-			NBGameMode->PrintChatMessageString(this, InChatMessageString);
+			NBGameMode->CheckChatMessageString(this, InChatMessageString);
 		}
 	}
 }

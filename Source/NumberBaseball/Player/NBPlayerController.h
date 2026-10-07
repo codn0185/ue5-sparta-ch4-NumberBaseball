@@ -39,7 +39,7 @@ class NUMBERBASEBALL_API ANBPlayerController : public APlayerController
 	void SetChatMessageString(const FString& InChatMessageString);
 
 	// 채팅 메시지 출력
-	void PrintChatMessageString(const FString& InChatMessageString);
+	void CheckChatMessageString(const FString& InChatMessageString);
 
   protected:
 	// 채팅 텍스트 커밋 시 콜백

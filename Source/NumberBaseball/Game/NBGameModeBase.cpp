@@ -144,7 +144,7 @@ FResult ANBGameModeBase::JudgeResult(const FString& InSecretNumberString, const 
 	return Result;
 }
 
-void ANBGameModeBase::PrintChatMessageString(ANBPlayerController* InChattingPlayerController, const FString& InChatMessageString)
+void ANBGameModeBase::CheckChatMessageString(ANBPlayerController* InChattingPlayerController, const FString& InChatMessageString)
 {
 	// PlayerController 유효성 검증
 	if (!IsValid(InChattingPlayerController))

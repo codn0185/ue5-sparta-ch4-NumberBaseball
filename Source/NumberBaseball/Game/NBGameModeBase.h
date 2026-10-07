@@ -55,8 +55,8 @@ class NUMBERBASEBALL_API ANBGameModeBase : public AGameModeBase
 	// 정답 판정
 	FResult JudgeResult(const FString& InSecretNumberString, const FString& InGuessNumberString);
 
-	// 채팅 메시지 출력 (일반 채팅 or 정답 유추 채팅인지 판별 후 출력)
-	void PrintChatMessageString(ANBPlayerController* InChattingPlayerController, const FString& InChatMessageString);
+	// 채팅 메시지 판별 (일반 채팅 or 정답 유추 채팅인지 판별)
+	void CheckChatMessageString(ANBPlayerController* InChattingPlayerController, const FString& InChatMessageString);
 	// 정답 유추 채팅인지 여부
 	bool IsGuessChat(const FString& InChatMessageString, FString& OutGuessNumberString) const;
 

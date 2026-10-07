@@ -14,7 +14,7 @@ void ANBGameStateBase::MulticastRPCBroadcastLoginMessage_Implementation(const FS
 			if (IsValid(NBPlayerController))
 			{
 				FString NotificationString = InNameString + TEXT(" has joined the game.");
-				NBPlayerController->PrintChatMessageString(NotificationString);
+				NBPlayerController->CheckChatMessageString(NotificationString);
 			}
 		}
 	}
