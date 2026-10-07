@@ -146,3 +146,4 @@ void ANBPlayerController::ClientRPCClearGuessResult_Implementation(const FNBGues
 	{
 		GameHUDInstance->ClearGuessResult();
 	}
+}
