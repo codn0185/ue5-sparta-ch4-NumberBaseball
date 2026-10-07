@@ -9,6 +9,7 @@
 class UNBGameHUD;
 
 struct FNBChatData;
+struct FNBGuessResultData;
 
 UCLASS()
 class NUMBERBASEBALL_API ANBPlayerController : public APlayerController
@@ -64,4 +65,12 @@ class NUMBERBASEBALL_API ANBPlayerController : public APlayerController
 	// 공지 알림 (클라이언트 실행 RPC)
 	UFUNCTION(Client, Reliable)
 	void ClientRPCShowNotification(const FText& NotificationText, const float Lifetime = 0.f);
+
+	// 유추 결과 받기 (클라이언트 실행 RPC)
+	UFUNCTION(Client, Reliable)
+	void ClientRPCReceiveGuessResult(const FNBGuessResultData& GuessResultData);
+
+	// 유추 결과 클리어(클라이언트 실행 RPC)
+	UFUNCTION(Client, Reliable)
+	void ClientRPCClearGuessResult(const FNBGuessResultData& GuessResultData);
 };

@@ -113,3 +113,18 @@ void ANBPlayerController::ClientRPCShowNotification_Implementation(const FText& 
 		GameHUDInstance->ShowNotification(NotificationText, Lifetime);
 	}
 }
+
+void ANBPlayerController::ClientRPCReceiveGuessResult_Implementation(const FNBGuessResultData& GuessResultData)
+{
+	if (IsValid(GameHUDInstance))
+	{
+		GameHUDInstance->AddGuessResult(GuessResultData);
+	}
+}
+
+void ANBPlayerController::ClientRPCClearGuessResult_Implementation(const FNBGuessResultData& GuessResultData)
+{
+	if (IsValid(GameHUDInstance))
+	{
+		GameHUDInstance->ClearGuessResult();
+	}
