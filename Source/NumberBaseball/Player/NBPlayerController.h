@@ -48,7 +48,7 @@ class NUMBERBASEBALL_API ANBPlayerController : public APlayerController
   public:
 	// 게임 리셋 (클라이언트 실행 RPC)
 	UFUNCTION(Client, Reliable)
-	void ClientRPCResetGame(const int32 MaxGuessCount);
+	void ClientRPCResetUI();
 
 	// 채팅 메시지 출력 (클라이언트 실행 RPC)
 	UFUNCTION(Client, Reliable)

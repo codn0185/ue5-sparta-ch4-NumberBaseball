@@ -5,16 +5,7 @@
 #include "Player/NBPlayerController.h"
 #include "Player/NBPlayerState.h"
 #include "UI/Data/NBChatItemData.h"
-
-FString FResult::ToString() const
-{
-	if (StrikeCount == 0 && BallCount == 0)
-	{
-		return TEXT("OUT");
-	}
-
-	return FString::Printf(TEXT("%dS%dB"), StrikeCount, BallCount);
-}
+#include "UI/Data/NBGuessResultItemData.h"
 
 ANBGameModeBase::ANBGameModeBase()
 {
@@ -119,29 +110,21 @@ bool ANBGameModeBase::IsGuessNumberString(const FString& InNumberString) const
 	return true;
 }
 
-FResult ANBGameModeBase::JudgeResult(const FString& InSecretNumberString, const FString& InGuessNumberString)
+void ANBGameModeBase::JudgeResult(const FString& InSecretNumberString, const FString& InGuessNumberString, int32& OutStrikeCount, int32& OutBallCount) const
 {
-	// 결과 구조체
-	FResult Result;
-
 	for (int32 Index = 0; Index < NumberLength; ++Index)
 	{
 		// 스트라이크 판별 - 숫자와 자리 모두 같음
 		if (InSecretNumberString[Index] == InGuessNumberString[Index])
 		{
-			Result.StrikeCount++;
+			OutStrikeCount++;
 		}
 		// 볼 판별 - 숫자만 같고 자리는 다음
 		else if (InSecretNumberString.Contains(FString(1, &InGuessNumberString[Index])))
 		{
-			Result.BallCount++;
+			OutBallCount++;
 		}
 	}
-
-	// 정답 여부 판별
-	Result.bIsCorrect = Result.StrikeCount == NumberLength;
-
-	return Result;
 }
 
 void ANBGameModeBase::CheckChatMessageString(ANBPlayerController* InChattingPlayerController, const FString& InChatMessageString)
@@ -171,22 +154,32 @@ void ANBGameModeBase::CheckChatMessageString(ANBPlayerController* InChattingPlay
 		// 유추 횟수 증가
 		IncreaseGuessCount(InChattingPlayerController);
 
+		// 유추 결과 생성 및 전달
+		FNBGuessResultData GuessResultData;
+		GuessResultData.MaxTryCount = NBPlayerState->MaxGuessCount;
+		GuessResultData.CurrentTryCount = NBPlayerState->CurrentGuessCount;
+		GuessResultData.GuessNumberString = InChatMessageString;
+		JudgeResult(SecretNumberString, InChatMessageString, GuessResultData.StrikeCount, GuessResultData.BallCount);
+
+		InChattingPlayerController->ClientRPCReceiveGuessResult(GuessResultData);
+
 		// 모든 플레이어에 유추 결과 메시지 출력
-		FResult Result = JudgeResult(SecretNumberString, InChatMessageString);
-		FString JudgeResultString = Result.ToString();
+		FString JudgeResultString = (GuessResultData.StrikeCount == 0 && GuessResultData.BallCount == 0)
+										? TEXT("OUT")
+										: FString::Printf(TEXT("%dS%dB"), GuessResultData.StrikeCount, GuessResultData.BallCount);
 		for (TObjectPtr<ANBPlayerController> NBPlayerController : AllPlayerControllers)
 		{
 			if (IsValid(NBPlayerController))
 			{
 				ChatData.MessageText = FText::FromString(InChatMessageString + TEXT(" -> ") + JudgeResultString);
-				ChatData.MessageColor = FColor::White;
+				ChatData.MessageColor = FColor::Yellow;
 
 				NBPlayerController->ClientRPCReceiveChat(ChatData);
 			}
 		}
 
 		// 게임 판정
-		JudgeGame(InChattingPlayerController, Result);
+		JudgeGame(InChattingPlayerController, GuessResultData.StrikeCount == NumberLength);
 	}
 	// 일반 채팅
 	else
@@ -197,7 +190,7 @@ void ANBGameModeBase::CheckChatMessageString(ANBPlayerController* InChattingPlay
 			if (IsValid(NBPlayerController))
 			{
 				ChatData.MessageText = FText::FromString(InChatMessageString);
-				ChatData.MessageColor = FColor::Yellow;
+				ChatData.MessageColor = FColor::White;
 
 				NBPlayerController->ClientRPCReceiveChat(ChatData);
 			}
@@ -247,12 +240,21 @@ void ANBGameModeBase::ResetGame()
 	{
 		if (IsValid(NBPlayerController))
 		{
-			NBPlayerController->ClientRPCResetGame(MaxGuessCount);
+			// UI 초기화
+			NBPlayerController->ClientRPCResetUI();
+
+			// 플레이어 스테이트 초기화
+			ANBPlayerState* NBPlayerState = NBPlayerController->GetPlayerState<ANBPlayerState>();
+			if (IsValid(NBPlayerState))
+			{
+				NBPlayerState->CurrentGuessCount = 0;
+				NBPlayerState->MaxGuessCount = MaxGuessCount;
+			}
 		}
 	}
 }
 
-void ANBGameModeBase::JudgeGame(ANBPlayerController* InChattingPlayerController, const FResult Result)
+void ANBGameModeBase::JudgeGame(ANBPlayerController* InChattingPlayerController, const bool bIsCorrect)
 {
 	if (!IsValid(InChattingPlayerController))
 	{
@@ -266,7 +268,7 @@ void ANBGameModeBase::JudgeGame(ANBPlayerController* InChattingPlayerController,
 	}
 
 	// 게임 승리 (해당 플레이어가 승리함)
-	if (Result.bIsCorrect)
+	if (bIsCorrect)
 	{
 		// 승리 알림
 		const FText WinNotificationText = FText::FromString(ChattingPlayerState->PlayerNameString + TEXT(" has won the game."));

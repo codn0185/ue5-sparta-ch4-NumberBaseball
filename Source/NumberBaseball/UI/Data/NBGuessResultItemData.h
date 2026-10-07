@@ -14,9 +14,9 @@ struct FNBGuessResultData
   public:
 	// 시도 횟수
 	UPROPERTY()
-	int32 CurrentTryCount;
+	int32 CurrentTryCount = 0;
 	UPROPERTY()
-	int32 MaxTryCount;
+	int32 MaxTryCount = 0;
 
 	// 유추 숫자
 	UPROPERTY()
@@ -24,9 +24,9 @@ struct FNBGuessResultData
 
 	// 유추 결과
 	UPROPERTY()
-	int32 StrikeCount;
+	int32 StrikeCount = 0;
 	UPROPERTY()
-	int32 BallCount;
+	int32 BallCount = 0;
 };
 
 UCLASS()
