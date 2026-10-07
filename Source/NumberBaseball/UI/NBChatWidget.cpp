@@ -1,8 +1,8 @@
 ﻿#include "UI/NBChatWidget.h"
 
+#include "Components/ListView.h"
 #include "UI/Data/NBChatItemData.h"
 #include "UI/NBChatInput.h"
-#include "UI/NBChatList.h"
 
 void UNBChatWidget::NativeConstruct()
 {
@@ -15,12 +15,12 @@ void UNBChatWidget::Add(const FNBChatData& ChatData)
 	UNBChatItemData* ChatItemData = NewObject<UNBChatItemData>(this);
 	ChatItemData->ChatData = ChatData;
 
-	ChatList->Add(ChatItemData);
+	ListView_Chat->AddItem(ChatItemData);
 }
 
 void UNBChatWidget::Clear()
 {
-	ChatList->Clear();
+	ListView_Chat->ClearListItems();
 }
 
 void UNBChatWidget::OnChatInputTextCommitted(const FText& Text, ETextCommit::Type CommitMethod)

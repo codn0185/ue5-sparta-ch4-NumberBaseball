@@ -18,7 +18,7 @@ class NUMBERBASEBALL_API UNBChatWidget : public UUserWidget
 
   protected:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UNBChatList> ChatList;
+	TObjectPtr<class UListView> ListView_Chat;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UNBChatInput> ChatInput;
