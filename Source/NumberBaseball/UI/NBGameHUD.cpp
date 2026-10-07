@@ -1,6 +1,7 @@
 ﻿#include "UI/NBGameHUD.h"
 
 #include "UI/NBChatWidget.h"
+#include "UI/NBGuessResultWidget.h"
 #include "UI/NBNotificationWidget.h"
 
 void UNBGameHUD::NativeConstruct()
@@ -30,6 +31,22 @@ void UNBGameHUD::ShowNotification(const FText& NotifiactionText, const float Lif
 	if (IsValid(NotificationWidget))
 	{
 		NotificationWidget->SetNotificationText(NotifiactionText, Lifetime);
+	}
+}
+
+void UNBGameHUD::AddGuessResult(const FNBGuessResultData& GuessResultData)
+{
+	if (IsValid(GuessResultWidget))
+	{
+		GuessResultWidget->Add(GuessResultData);
+	}
+}
+
+void UNBGameHUD::ClearGuessResult()
+{
+	if (IsValid(GuessResultWidget))
+	{
+		GuessResultWidget->Clear();
 	}
 }
 
