@@ -30,8 +30,12 @@ void ANBPlayerController::BeginPlay()
 		return;
 	}
 
+	// UI 입력 모드
 	FInputModeUIOnly InputModeUIOnly;
 	SetInputMode(InputModeUIOnly);
+
+	// 마우스 커서 보이기
+	bShowMouseCursor = true;
 
 	// GameHUD 위젯 생성
 	if (IsValid(GameHUDClass))
